@@ -15,6 +15,7 @@ def at_first():
         genre = request.form['genre']
         song_url = findSong(time, author, genre)
         print song_url
+        song_url = song_url.encode('ascii','ignore')
         return render_template('index.html', time = time, author = author, genre = genre, song_id = song_url, play = "true")
     else:
         return render_template('index.html', time = "", author = "", genre = "", song_id = "0", play = "false")
