@@ -6,34 +6,30 @@ from xml.dom import minidom
 
 app = Flask(__name__)
 
-# @app.route('/', methods=["POST"])
-# def submit_form(): 
-#     time = request.form['time']
-#     author = request.form['author']
-#     genre = request.form['genre']
-#     song_url = findSong(int(time), author, genre)
-    # figure out what song to play
-    #change html so that the song is played
-    # return render_template('index.html', time = time, author = author, genre = genre, song_url = song_url, play = "true")
-    
-
 @app.route('/', methods = ["GET", "POST"])
 def at_first():
     if request.method == "POST":
+        print "posting"
         time = request.form['time']
         author = request.form['author']
         genre = request.form['genre']
-        song_url = findSong(int(time), author, genre)
-        return render_template('index.html', time = time, author = author, genre = genre, song_url = song_url, play = "true")
+        song_url = findSong(time, author, genre)
+        print song_url
+        return render_template('index.html', time = time, author = author, genre = genre, song_id = song_url, play = "true")
     else:
-        return render_template('index.html', time = "", author = "", genre = "", song_url = "0", play = "false")
+        return render_template('index.html', time = "", author = "", genre = "", song_id = "0", play = "false")
 
 
 # Assume *optional = (genre, author, etc..)
-def findSong(duration, author=" ", genre="electronic"):
+def findSong(duration, author="", genre="electronic"):
     CLIENT_ID = '93fbdae95f70cd94b70864746295c28f'
     
     url = "http://api.soundcloud.com/tracks?client_id=" + CLIENT_ID
+
+    try:
+        duration = float(duration) # Converts Duration from String
+    except:
+        duration = 5.0 # Default Error Handling Duration
 
     url += "&filter.duration="
     if duration < 2:
@@ -45,7 +41,7 @@ def findSong(duration, author=" ", genre="electronic"):
     else:
         url += "epic"
         
-    url += "&genre=" + genre
+    url += "&genre=" + genre + "&q=" + author
 
     page = urlopen(url)
     xmldoc = minidom.parse(page)
@@ -55,14 +51,14 @@ def findSong(duration, author=" ", genre="electronic"):
         if "tracks" in el.firstChild.nodeValue:
             uris.append(el)
             
-    epsilon = 999999
+    epsilon = float('inf')
 
     for x in range(len(lengths)):
-        diff = duration*60000 - int(lengths[x].firstChild.nodeValue)
-        if abs(diff) < epsilon:
+        diff = abs(duration * 60000 - float(lengths[x].firstChild.nodeValue))
+        if diff < epsilon:
             epsilon = diff
             link = uris[x].firstChild.nodeValue
-        if epsilon < 15000:
-            return link
+        if epsilon < 10000: # Tolerance of 10 Seconds
+            return link[33:]
         
-    return link
+    return link[33:]
