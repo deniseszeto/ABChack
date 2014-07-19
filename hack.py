@@ -39,7 +39,7 @@ def findSong(duration, author="", genre="electronic"):
         if diff < epsilon:
             epsilon = diff
             link = uris[x].firstChild.nodeValue
-        if epsilon < 15000: # Tolerance of 10 Seconds
-            return link
+        if epsilon < 10000: # Tolerance of 10 Seconds
+            return link[33:]
         
-    return link
+    return link[33:]
