@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request
 from urllib2 import urlopen
 from xml.dom import minidom
-
+from random import choice
 
 app = Flask(__name__)
 
@@ -21,46 +21,70 @@ def at_first():
         return render_template('index.html', time = "", author = "", genre = "", song_id = "0", play = "false")
 
 
-# Assume *optional = (genre, author, etc..)
-def findSong(duration, title="", genre="electronic"):
+def findSong(time, title="", genre="electronic", tolerance=10):
+    """
+        Returns a song ID of a song that lasts an input time with
+        optional query and genre fields to a given tolerance. The
+        song is chosen at random from a list of qualifying songs.
+        However, if no songs are found within the given tolerance,
+        the song closest to input time will be returned.
+        
+        If an input is invalid, the function uses a default valid
+        input instead of the invalid one.
+
+        Time is in minutes, and tolerance is in seconds.
+    """
     CLIENT_ID = '93fbdae95f70cd94b70864746295c28f'
+    DEFAULT_TIME = 5.0
+    DEFAULT_LINK = "http://api.soundcloud.com/tracks/159367793"
+    SHORT = 2
+    MEDIUM = 10
+    LONG = 30
+    MINUTES_TO_MILLISECONDS = 60000
+    SECONDS_TO_MILLISECONDS = 1000
     
+    try:
+        time = float(time)
+    except:
+        time = DEFAULT_TIME
+    title = title.replace(" ", "_")
+    genre = genre.replace(" ", "_")
+    
+
     url = "http://api.soundcloud.com/tracks?client_id=" + CLIENT_ID
 
-    try:
-        duration = float(duration) # Converts Duration from String
-    except:
-        duration = 5.0 # Default Error Handling Duration
-
     url += "&filter.duration="
-    if duration < 2:
+    if time < SHORT:
         url += "short"
-    elif duration < 10:
+    elif time < MEDIUM:
         url += "medium"
-    elif duration < 30:
+    elif time < LONG:
         url += "long"
     else:
         url += "epic"
-        
-    url += "&genre=" + genre + "&q=" + title
+
+    # limit=200 maxes out the number of results on the page.
+    url += "&genre=" + genre + "&q=" + title + "&limit=200"
 
     page = urlopen(url)
-    xmldoc = minidom.parse(page)
-    lengths = xmldoc.getElementsByTagName('duration')
+    xmlDoc = minidom.parse(page)
+    durations = xmlDoc.getElementsByTagName('duration')
     uris = []
-    for el in xmldoc.getElementsByTagName('uri'):
+    for el in xmlDoc.getElementsByTagName('uri'):
         if "tracks" in el.firstChild.nodeValue:
             uris.append(el)
             
     epsilon = float('inf')
-    link = "http://api.soundcloud.com/tracks/159352695"
-    
-    for x in range(len(lengths)):
-        diff = abs(duration * 60000 - float(lengths[x].firstChild.nodeValue))
+    link = DEFAULT_LINK
+    timeMs = time * MINUTES_TO_MILLISECONDS
+    songList = []
+    for i in range(len(durations)):
+        diff = abs(timeMs - float(durations[i].firstChild.nodeValue))
         if diff < epsilon:
             epsilon = diff
-            link = uris[x].firstChild.nodeValue
-        if epsilon < 10000: # Tolerance of 10 Seconds
-            return link[33:]
-        
-    return link[33:]
+            link = uris[i].firstChild.nodeValue
+            if epsilon < tolerance * SECONDS_TO_MILLISECONDS:
+                songList.append(link)
+                # return link[33:]
+            
+    return choice(songList)[33:] if songList else link[33:]
