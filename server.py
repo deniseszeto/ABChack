@@ -11,9 +11,9 @@ def submit_form():
 
         # figure out what song to play
         #change html so that the song is played
-
+        return render_template('index.html', time = time, genre = genre, song_id = "12345678", play = "true")
     
 
 @app.route('/')
 def at_first():
-    return render_template('index.html')
+    return render_template('index.html', time = "", genre = "", song_id = "0", play = "false")
