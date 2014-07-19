@@ -1,3 +1,6 @@
+# TODO: Add "Randomizer", Update Webpage to show more than 50 items
+#       Optimize Parser
+
 from urllib.request import urlopen
 from xml.dom import minidom
 
@@ -11,6 +14,8 @@ def findSong(duration, title="", genre="electronic"):
         duration = float(duration) # Converts Duration from String
     except:
         duration = 5.0 # Default Error Handling Duration
+    title = title.replace(" ", "_")
+    genre = genre.replace(" ", "_")
 
     url += "&filter.duration="
     if duration < 2:
