@@ -1,25 +1,40 @@
-import soundcloud
+from urllib.request import urlopen
+from xml.dom import minidom
 
-# create a client object with your app credentials
-client = soundcloud.Client(client_id='93fbdae95f70cd94b70864746295c28f')
+# Assume *optional = (genre, author, etc..)
+def findSong(duration, author=" ", genre="electronic"):
+    CLIENT_ID = '93fbdae95f70cd94b70864746295c28f'
+    
+    url = "http://api.soundcloud.com/tracks?client_id=" + CLIENT_ID
 
-# fetch track to stream
-track = client.get('/tracks/293')
+    url += "&filter.duration="
+    if duration < 2:
+        url += "short"
+    elif duration < 10:
+        url += "medium"
+    elif duration < 30:
+        url += "long"
+    else:
+        url += "epic"
+        
+    url += "&genre=" + genre
 
-# get the tracks streaming URL
-stream_url = client.get(track.stream_url, allow_redirects=False)
+    page = urlopen(url)
+    xmldoc = minidom.parse(page)
+    lengths = xmldoc.getElementsByTagName('duration')
+    uris = []
+    for el in xmldoc.getElementsByTagName('uri'):
+        if "tracks" in el.firstChild.nodeValue:
+            uris.append(el)
+            
+    epsilon = 999999
 
-# print the tracks stream URL
-print stream_url.location
-
-
-tracks = client.get('/tracks', limit=10)
-for track in tracks:
-    print track.title
-app = client.get('/apps/124')
-print app.permalink_url
-
-print("hi world") #kai
-print("bye world") #jackson
-
-print("hey world") # maiki
+    for x in range(len(lengths)):
+        diff = duration*60000 - int(lengths[x].firstChild.nodeValue)
+        if abs(diff) < epsilon:
+            epsilon = diff
+            link = uris[x].firstChild.nodeValue
+        if epsilon < 15000:
+            return link
+        
+    return link
