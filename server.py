@@ -1,8 +1,15 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods = ["POST"])
 def hello():
-   return app.send_static_file('index.html')
+    if request.method == 'POST':
+        time = request.form['time']
+        genre = request.form['genre']
+
+        # figure out what song to play
+        #change html so that the song is played
+
+    return render_template('index.html')
