@@ -9,17 +9,18 @@
   <body>
     <div class="floating container" >
       <div>
-        <h1>MUSIC TIMER</h1>
+        <h1><b>MUSIC TIMER</b></h1>
         <br>
         <form action='/' method='POST'>
           <div>
-          HOW LONG (in minutes) U WANT COOK
+          <h5>HOW LONG U WANT COOK</h5>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Time">
+            <span class="input-group-addon">minutes</span>
           </div>
-          <input name="time" type="text" /> 
-          <div>
-          WHAT KIND MUSIC YOU LIKE
+          <h5>WHAT KIND MUSIC YOU LIKE</h5>
           </div>
-          <input name="genre" type="text" />
+          <input name="genre" class="form-control" type="text" />
           <br>
           <br>
           <input type="submit" class="btn btn-default" value="PLAY ME A SONG"/>
@@ -28,5 +29,6 @@
         </div>
       </div>
     </div>
+    <script src="{{ url_for('static', filename='timer.js')}}"></script>
   </body>
 </html>
