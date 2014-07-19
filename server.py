@@ -22,7 +22,7 @@ def at_first():
 
 
 # Assume *optional = (genre, author, etc..)
-def findSong(duration, author="", genre="electronic"):
+def findSong(duration, title="", genre="electronic"):
     CLIENT_ID = '93fbdae95f70cd94b70864746295c28f'
     
     url = "http://api.soundcloud.com/tracks?client_id=" + CLIENT_ID
@@ -42,7 +42,7 @@ def findSong(duration, author="", genre="electronic"):
     else:
         url += "epic"
         
-    url += "&genre=" + genre + "&q=" + author
+    url += "&genre=" + genre + "&q=" + title
 
     page = urlopen(url)
     xmldoc = minidom.parse(page)
@@ -53,7 +53,8 @@ def findSong(duration, author="", genre="electronic"):
             uris.append(el)
             
     epsilon = float('inf')
-
+    link = "http://api.soundcloud.com/tracks/159352695"
+    
     for x in range(len(lengths)):
         diff = abs(duration * 60000 - float(lengths[x].firstChild.nodeValue))
         if diff < epsilon:
