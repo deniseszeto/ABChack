@@ -7,6 +7,11 @@ def findSong(duration, author=" ", genre="electronic"):
     
     url = "http://api.soundcloud.com/tracks?client_id=" + CLIENT_ID
 
+    try:
+        duration = float(duration) # Converts Duration from String
+    except:
+        duration = 5.0 # Default Error Handling Duration
+
     url += "&filter.duration="
     if duration < 2:
         url += "short"
@@ -27,14 +32,15 @@ def findSong(duration, author=" ", genre="electronic"):
         if "tracks" in el.firstChild.nodeValue:
             uris.append(el)
             
-    epsilon = 999999
+    epsilon = float('inf')
 
     for x in range(len(lengths)):
-        diff = duration*60000 - int(lengths[x].firstChild.nodeValue)
-        if abs(diff) < epsilon:
+        diff = abs(duration * 60000 - float(lengths[x].firstChild.nodeValue))
+        if diff < epsilon:
             epsilon = diff
             link = uris[x].firstChild.nodeValue
-        if epsilon < 15000:
+        if epsilon < 15000: # Tolerance of 10 Seconds
+            print ((duration * 60000 - diff)/60000.0)
             return link
         
     return link
