@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 @app.route('/', methods = ["POST"])
 def submit_form():
+    print "posting!!!!!!"
     if request.method == 'POST':
         time = request.form['time']
         genre = request.form['genre']
