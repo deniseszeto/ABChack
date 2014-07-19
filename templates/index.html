@@ -1,21 +1,32 @@
 <html>
   <head>
-    <title>Music Timer!!!!</title>
+    <title>MUSIC TIMER</title>
     <link rel="shortcut icon" href= "{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href = "{{ url_for('static', filename='style.css') }}" />
+    <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
   </head>
   <body>
-    <h1>Music Timer!!!!!!</h1>
-    <form action='/' method='POST'>
-      HOW LONG (in hours) U WANT COOK
-      <input name="time" type="text" /> 
-      <br>
-      WHAT KIND MUSIC YOU LIKE
-      <input name="genre" type="text" />
-      <br>
-      <input type="submit" value="PLAY ME A SONG"/>
-    </form>
-    <div id="player">
+    <div class="floating container" >
+      <div>
+        <h1>MUSIC TIMER</h1>
+        <br>
+        <form action='/' method='POST'>
+          <div>
+          HOW LONG (in minutes) U WANT COOK
+          </div>
+          <input name="time" type="text" /> 
+          <div>
+          WHAT KIND MUSIC YOU LIKE
+          </div>
+          <input name="genre" type="text" />
+          <br>
+          <br>
+          <input type="submit" class="btn btn-default" value="PLAY ME A SONG"/>
+        </form>
+        <div id="player">
+        </div>
+      </div>
     </div>
   </body>
 </html>
