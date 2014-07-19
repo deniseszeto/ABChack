@@ -34,7 +34,7 @@
             (function(){
               var widgetIframe = document.getElementById('sc-widget'),
                   widget       = SC.Widget(widgetIframe),
-                  newSoundUrl = 'http://api.soundcloud.com/tracks/{{ song_id }}';
+                  newSoundUrl = '{{ song_url }}';
               if ({{play}} == "true") {
                 widget.bind(SC.Widget.Events.READY, function() {
                   // load new widget
@@ -51,6 +51,5 @@
         </div>
       </div>
     </div>
-    <script src="{{ url_for('static', filename='timer.js')}}"></script>
   </body>
 </html>
