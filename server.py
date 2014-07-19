@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from urllib2 import urlopen
 from xml.dom import minidom
 
@@ -19,24 +19,13 @@ app = Flask(__name__)
 
 @app.route('/', methods = ["GET", "POST"])
 def at_first():
-# if request.method == "GET":
-#     time = request.form['time']
-#     author = request.form['author']
-#     genre = request.form['genre']
-#     song_url = findSong(int(time), author, genre)
-# else:
-    print dir(request)
-    try:
-        if request.method == "POST":
-            time = request.form['time']
-            author = request.form['author']
-            genre = request.form['genre']
-            song_url = findSong(int(time), author, genre)
-            return render_template('index.html', time = time, author = author, genre = genre, song_url = song_url, play = "true")
-        else:
-            pass
-    except:
-
+    if request.method == "POST":
+        time = request.form['time']
+        author = request.form['author']
+        genre = request.form['genre']
+        song_url = findSong(int(time), author, genre)
+        return render_template('index.html', time = time, author = author, genre = genre, song_url = song_url, play = "true")
+    else:
         return render_template('index.html', time = "", author = "", genre = "", song_url = "0", play = "false")
 
 
