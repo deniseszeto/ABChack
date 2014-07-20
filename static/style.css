@@ -6,7 +6,7 @@ body {
 
 .floating {
     float: none;
-    width: 310px;
+    width: 350px;
     background: rgba(234,234,234,0.6);
     border: 1px solid #aaa;
     border-bottom-color: #999;
@@ -15,7 +15,6 @@ body {
     -moz-border-radius: 5px;
     border-radius: 5px;
     padding: 20px 25px 20px;
-    margin:0 auto;
-    margin-top: 10px;
+    margin:10px auto;
 }
 
